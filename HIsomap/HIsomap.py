@@ -18,7 +18,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 class HIsomap(BaseEstimator):
-    def __init__(self, n_components=2, filter_function="base_point_geodesic_distance", nr_cubes=20, overlap_perc=0.2, show_skeleton="off", show_projection="off", n_neighbors=8, eigen_solver='auto', n_jobs=1, clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5)):
+    def __init__(self, n_components=2, filter_function="base_point_geodesic_distance", nr_cubes=20, overlap_perc=0.2, show_skeleton="off", show_projection="off", auto_tuning="off", n_neighbors=8, eigen_solver='auto', n_jobs=1, clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5)):
         self.n_components = n_components
         self.filter_function = filter_function
         self.nr_cubes = nr_cubes
@@ -32,6 +32,8 @@ class HIsomap(BaseEstimator):
         self.landmarks_indexes = []
         self.landmarks = []
         self.skeleton = []
+        self.basePoint = []
+        self.auto_tuning = auto_tuning
 
     @property
     def fit(self, X, y=None, init=None):
@@ -174,6 +176,11 @@ class HIsomap(BaseEstimator):
             print ("Warning: Please run HIsomap.fit_transform() first")
         return self.landmarks
 
+    def get_base_point(self):
+        if len(self.landmarks_indexes) == 0:
+            print ("Warning: Please run HIsomap.fit_transform() first")
+        return self.basePoint
+
     def get_skeleton_links(self):
         if len(self.landmarks_indexes) == 0:
             print ("Warning: Please run HIsomap.fit_transform() first")
@@ -186,13 +193,15 @@ class HIsomap(BaseEstimator):
         graph = mapper.map(lens, X,
                            clusterer=self.clusterer,
                            nr_cubes=self.nr_cubes,
-                           overlap_perc=self.overlap_perc)
+                           overlap_perc=self.overlap_perc,
+                           auto_tuning=self.auto_tuning)
 
         landmarks = self._get_landmarks(graph)
         Landmark, links = self._compute_skeleton(landmarks, X)
 
         self.landmarks = Landmark
         self.skeleton = links
+        self.basePoint = bp
 
         if self.show_skeleton == "on":
             self._plot_data_with_skeleton(

@@ -5,6 +5,7 @@ from collections import defaultdict
 import json
 import itertools
 from sklearn import cluster, preprocessing, manifold, decomposition
+from sklearn.metrics.pairwise import euclidean_distances
 from scipy.spatial import distance
 from datetime import datetime
 import sys
@@ -26,8 +27,8 @@ if sys.hexversion < 0x03000000:
     from itertools import izip as zip
     range = xrange
 
-#from mapper import n_obs, cmappertoolserror
-
+minTub = 0.0000001
+cntDB = 20
 
 class KeplerMapper(object):
 
@@ -172,7 +173,7 @@ class KeplerMapper(object):
 
         return distMatrix, X, BP
 
-    def map(self, projected_X, inverse_X=None, clusterer=cluster.DBSCAN(eps=0.5, min_samples=3), nr_cubes=10, overlap_perc=0.1):
+    def map(self, projected_X, inverse_X=None, clusterer=cluster.DBSCAN(eps=0.5, min_samples=3), nr_cubes=10, overlap_perc=0.1, auto_tuning='off'):
         # This maps the data to a simplicial complex. Returns a dictionary with nodes and links.
         #
         # Input:    projected_X. A Numpy array with the projection/lens.
@@ -208,6 +209,7 @@ class KeplerMapper(object):
         self.nr_cubes = nr_cubes
         self.clusterer = clusterer
         self.overlap_perc = overlap_perc
+        self.auto_tuning = auto_tuning
 
         # If inverse image is not provided, we use the projection as the inverse image (suffer projection loss)
         if inverse_X is None:
@@ -223,7 +225,21 @@ class KeplerMapper(object):
 
         # We calculate the overlapping windows distance
         self.overlap_dist = self.overlap_perc * self.chunk_dist
-
+        lens = projected_X
+        sortedlens = sorted(lens.flatten())
+        chunk_lens = np.array_split(np.array(sortedlens), nr_cubes)
+        lens_start = []
+        lens_end = []
+        if self.auto_tuning == 'on':
+            overlap_n = int(1/self.overlap_perc)
+            for i in range(len(chunk_lens)-1):
+                lens_start.append(chunk_lens[i][0])
+                lens_end.append(np.array_split(chunk_lens[i+1], overlap_n)[0][-1])
+            print("Auto-tuning enabled!")
+            lens_start.append(chunk_lens[-1][0])
+            lens_end.append(chunk_lens[-1][-1] + minTub)
+        
+        
         # We find our starting point
         self.d = np.min(projected_X, axis=0)
 
@@ -239,7 +255,11 @@ class KeplerMapper(object):
         # Algo's like K-Means, have a set number of clusters. We need this number
         # to adjust for the minimal number of samples inside an interval before
         # we consider clustering or skipping it.
+        
+
+        
         cluster_params = self.clusterer.get_params()
+
         try:
             min_cluster_samples = cluster_params["n_clusters"]
         except:
@@ -254,12 +274,25 @@ class KeplerMapper(object):
                 list(cube_coordinates_all(nr_cubes, di.shape[0])))
             print("Creating %s hypercubes." % total_cubes)
 
+        
         for i, coor in enumerate(cube_coordinates_all(nr_cubes, di.shape[0])):
 
             # Slice the hypercube
-            hypercube = projected_X[np.invert(np.any((projected_X[:, di+1] >= self.d[di] + (coor * self.chunk_dist[di])) &
-                                                     (projected_X[:, di+1] < self.d[di] + (coor * self.chunk_dist[di]) + self.chunk_dist[di] + self.overlap_dist[di]) == False, axis=1))]
 
+            if self.auto_tuning == 'on':
+                hypercube = projected_X[np.invert(np.any((projected_X[:, di+1] >= lens_start[i]) &
+                                                         (projected_X[:, di+1] < lens_end[i]) == False, axis=1))]
+                if ('eps' in cluster_params.keys()) and ('min_samples' in cluster_params.keys()):
+                    pointsInCube = inverse_X[hypercube[:,0].astype(int)][:, 1:]
+                    eps_cube = get_eps_from_cube(pointsInCube)
+                    min_samples_cube = int(hypercube.shape[0]/cntDB)+1
+                    self.clusterer = cluster.DBSCAN(eps=eps_cube, min_samples=min_samples_cube)
+                    print("Cube %s: #points: %s; range: [%.2f, %.2f]; eps: %.2f; min_samples: %s;" %(i, hypercube.shape[0], lens_start[i], lens_end[i], eps_cube, min_samples_cube))
+                
+            else:
+                hypercube = projected_X[np.invert(np.any((projected_X[:, di+1] >= self.d[di] + (coor * self.chunk_dist[di])) &
+                                                         (projected_X[:, di+1] < self.d[di] + (coor * self.chunk_dist[di]) + self.chunk_dist[di] + self.overlap_dist[di]) == False, axis=1))]
+            
             if self.verbose > 1:
                 print("There are %s points in cube_%s / %s with starting range %s" %
                       (hypercube.shape[0], i, total_cubes, self.d[di] + (coor * self.chunk_dist[di])))
@@ -291,7 +324,7 @@ class KeplerMapper(object):
             else:
                 if self.verbose > 1:
                     print("Cube_%s is empty.\n" % (i))
-
+        
         # Create links when clusters from different hypercubes have members with the same sample id.
         candidates = itertools.combinations(nodes.keys(), 2)
         for candidate in candidates:
@@ -312,6 +345,12 @@ class KeplerMapper(object):
         graph["meta_nodes"] = meta
         return graph
 
+def get_eps_from_cube(X):
+    dists = sorted(euclidean_distances(X, X).flatten().tolist())
+    ll = sorted(dists)
+    #eps = ll[len(X)+int(len(ll)/(cntDB**2))]
+    eps = max(ll)/cntDB
+    return eps
 
 def eccentricity(data, exponent=1.,  metricpar={}, callback=None):
     if data.ndim == 1:
