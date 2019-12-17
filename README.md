@@ -2,7 +2,7 @@
 
 This is a Python implementation of homology-preserving dimension reduction(DR) algorithm. The implementation is described in ["Homology-Preserving Dimensionality Reduction via Manifold Landmarking and Tearing"](https://arxiv.org/pdf/1806.08460.pdf).
 
-There is also a ["demo"](https://github.com/LynneYan/HomologyDR_Tearing) for both homology-preserving manifold landmarking and tearing.
+There is also a [demo](https://github.com/LynneYan/HomologyDR_Tearing) for both homology-preserving manifold landmarking and tearing.
 
 ## How to use:
 
