@@ -48,7 +48,7 @@ def plot_projection(Y, proj_landmark, links, color, title, show_skeleton="off"):
 
 
 data_dir = './data'
-data_types = ['SwissHole', 'Octa', 'FishingNet', '4elt', 'Mice', 'Portraits']
+data_types = ['SwissHole', 'octa', 'FishingNet', '4elt', 'Mice', 'Portraits']
 
 nr_cubess = [25, 20, 30, 10, 12, 4]
 ps = [0.2, 0.2, 0.5, 0.1, 0.2, 0.4]

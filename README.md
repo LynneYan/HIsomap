@@ -28,7 +28,7 @@ Running examples requires:
 ```
 git clone https://github.com/LynneYan/HIsomap.git
 cd HIsomap
-python setup.py install
+sudo python setup.py install
 ```
 
 ### Run example
