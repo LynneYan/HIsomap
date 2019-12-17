@@ -41,12 +41,13 @@ class KeplerMapper(object):
         self.overlap_perc = 0
         self.clusterer = False
 
-    def fit_transform(self, X, projection="sum", scaler=preprocessing.MinMaxScaler(), distance_matrix=False):
+    def fit_transform(self, X, projection="sum", BP='EP', scaler=preprocessing.MinMaxScaler(), distance_matrix=False):
 
         self.inverse = X
         self.scaler = scaler
         self.projection = str(projection)
         self.distance_matrix = distance_matrix
+        self.Bp = BP
 
         if self.distance_matrix in ["braycurtis",
                                     "canberra",
@@ -116,7 +117,7 @@ class KeplerMapper(object):
                 height = X[:, 0].reshape((X.shape[0], 1))
                 X = height
             if projection == "base_point_geodesic_distance":
-                distMatrix, X, BP = Base_Point_Geodesic_Distance(X, 8)
+                distMatrix, X, BP = Base_Point_Geodesic_Distance(X, 8, self.Bp)
                 X = X.reshape((X.shape[0], 1))
 
             if projection == "dist_mean":  # Distance of x to mean of X
@@ -285,17 +286,17 @@ class KeplerMapper(object):
                 if ('eps' in cluster_params.keys()) and ('min_samples' in cluster_params.keys()):
                     pointsInCube = inverse_X[hypercube[:,0].astype(int)][:, 1:]
                     eps_cube = get_eps_from_cube(pointsInCube)
-                    min_samples_cube = int(hypercube.shape[0]/cntDB)+1
-                    self.clusterer = cluster.DBSCAN(eps=eps_cube, min_samples=min_samples_cube)
+                    min_samples_cube = int(hypercube.shape[0]/20)+1
+                    clusterer = cluster.DBSCAN(eps=eps_cube, min_samples=min_samples_cube)
                     print("Cube %s: #points: %s; range: [%.2f, %.2f]; eps: %.2f; min_samples: %s;" %(i, hypercube.shape[0], lens_start[i], lens_end[i], eps_cube, min_samples_cube))
                 
             else:
                 hypercube = projected_X[np.invert(np.any((projected_X[:, di+1] >= self.d[di] + (coor * self.chunk_dist[di])) &
                                                          (projected_X[:, di+1] < self.d[di] + (coor * self.chunk_dist[di]) + self.chunk_dist[di] + self.overlap_dist[di]) == False, axis=1))]
             
-            if self.verbose > 1:
-                print("There are %s points in cube_%s / %s with starting range %s" %
-                      (hypercube.shape[0], i, total_cubes, self.d[di] + (coor * self.chunk_dist[di])))
+            if self.verbose > -2:
+                print("There are %s points in cube_%s with starting range %s" %
+                      (hypercube.shape[0], i, self.d[di] + (coor * self.chunk_dist[di])))
 
             # If at least min_cluster_samples samples inside the hypercube
             if hypercube.shape[0] >= min_cluster_samples:
@@ -305,8 +306,8 @@ class KeplerMapper(object):
 
                 clusterer.fit(inverse_x[:, 1:])
 
-                if self.verbose > 1:
-                    print("Found %s clusters in cube_%s\n" % (
+                if self.verbose > -2:
+                    print("Found %s clusters in cube %s\n" % (
                         np.unique(clusterer.labels_[clusterer.labels_ > -1]).shape[0], i))
 
                 # Now for every (sample id in cube, predicted cluster label)
@@ -322,8 +323,8 @@ class KeplerMapper(object):
                         size = hypercube.shape[0]
 
             else:
-                if self.verbose > 1:
-                    print("Cube_%s is empty.\n" % (i))
+                if self.verbose > -2:
+                    print("Cube %s is empty.\n" % (i))
         
         # Create links when clusters from different hypercubes have members with the same sample id.
         candidates = itertools.combinations(nodes.keys(), 2)
@@ -347,9 +348,11 @@ class KeplerMapper(object):
 
 def get_eps_from_cube(X):
     dists = sorted(euclidean_distances(X, X).flatten().tolist())
-    ll = sorted(dists)
-    #eps = ll[len(X)+int(len(ll)/(cntDB**2))]
-    eps = max(ll)/cntDB
+    ll = set(dists)
+    ll.remove(0)
+    ll = sorted(list(ll))
+    eps = ll[int(len(ll)/cntDB)]*2
+    #eps = max(ll)/cntDB
     return eps
 
 def eccentricity(data, exponent=1.,  metricpar={}, callback=None):
@@ -403,7 +406,7 @@ def Density_Estimator(D, k):
     return DE
 
 
-def Base_Point_Geodesic_Distance(D, n_neighbors):
+def Base_Point_Geodesic_Distance(D, n_neighbors, BP):
     n_jobs = 1
     ALL_matrix = D
     nbrs_ = NearestNeighbors(n_neighbors=n_neighbors,
@@ -412,7 +415,30 @@ def Base_Point_Geodesic_Distance(D, n_neighbors):
     kng = kneighbors_graph(nbrs_, n_neighbors, mode='distance', n_jobs=n_jobs)
     dist_matrix_ = graph_shortest_path(kng, method='auto', directed=False)
     G = dist_matrix_
-    Index = np.argmax(G[random.randint(0, len(D)+1)])
+    if BP == 'DR':
+        kde = stats.gaussian_kde(D.T)
+        KDE = kde(D.T).reshape((D.shape[0],1))
+        Index = np.argmax(KDE)
+    elif BP == 'BC':
+        base_point = []
+        for i in range(D.shape[1]):
+            base_point.append(np.median(D[:,i]))
+        dist_min = 100000000
+        index = 0
+        for i in range(0, len(D)):
+            tmp = euclidean(D[i], base_point)
+            if tmp < dist_min:
+                dist_min = tmp
+                Index = i
+    else:
+        xxyy = np.where(G == G.max())[0]
+        xx = xxyy[0]
+        yy = np.argmax(G[xx])
+        KDE = Gauss_density(D, 0.8, {}, None).reshape((D.shape[0], 1))
+        if KDE[xx] < KDE[yy]:
+            Index = xx
+        else:
+            Index = yy
     return G, G[Index], D[Index]
 
 
