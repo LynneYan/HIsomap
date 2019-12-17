@@ -33,7 +33,7 @@ sudo python setup.py install
 
 ### Run example
 ```
-python test.py
+python example.py
 ```
 
 #### Note
