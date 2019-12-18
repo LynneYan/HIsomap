@@ -80,8 +80,12 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
               overlap_perc=0.2, auto_tuning="off", n_neighbors=8, eigen_solver='auto', n_jobs=1, 
               clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5))
 ```
+### Parameters
 
-
+**n_components**, int, optional, default: 2
+    Number of dimensions in which to immerse the dissimilarities.
+**filter_function**, str, optional, default: "base_point_geodesic_distance"
+    Filter function. A string from ["sum", "mean", "median", "max", "min", "std", "dist_mean", "l2norm", "knn_distance_n"]. If using knn_distance_n write the number of desired neighbors in place of n: knn_distance_5 for summed distances to 5 nearest neighbors.
 
 ## Usage
 
