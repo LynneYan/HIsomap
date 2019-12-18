@@ -126,6 +126,26 @@ __init__(self, n_components=2, filter_function="base_point_geodesic_distance", B
          clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5))
 ```
 Initialize self. 
+
+```python
+fit_transform(self, X, y=None, init=None)
+```
+Fit the data from X, and returns the embedded coordinates.
+
+###Parameters
+- **X**, array, shape (n_samples, n_features).
+  - Input data. 
+- **y**, Ignored
+
+- **init**, ndarray, shape (n_samples,), optional, default: None
+  - Starting configuration of the embedding to initialize the SMACOF algorithm. By default, the algorithm is initialized with a randomly chosen array.
+
+### Returns
+- **Y**, array, shape (n_samples, n_components)
+  - Projected output.
+
+
+
 ## Usage
 
 ## Citation
