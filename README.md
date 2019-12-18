@@ -163,9 +163,23 @@ get_skeleton_nodes(self)
 get_skeleton_links(self)
 ```
 ### Returns
-- **skeleton**, ndarray, shape (n_link, 2).
-  - Edge of mapper graph.
+- **skeleton**, ndarray, shape (n_links, 2).
+  - Edges of mapper graph.
 
+```python
+get_scalar_value(self)
+```
+### Returns
+- **lens**, Numpy Array, shape (, n_samples)
+  - Scalar values of input data. Lower dimensional representation of data.
+
+
+```python
+get_base_point(self)
+```
+### Returns
+- **basePoint**, Numpy Array, shape (, n_features).
+  - Base point in original domain.
 
 ## Usage
 
