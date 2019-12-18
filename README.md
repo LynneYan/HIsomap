@@ -101,6 +101,9 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
   - The percentage of overlap "between" the intervals/hypercubes.
 
 - **auto_tuning**, string, optional, default: "off"
+  - A string from ["off", "on"].
+  - If "off", the input data will be divided into nr_cube cubes with fixed length of interval.
+  - If "on", the input data will be divided into nr_cube cubes where each cube contain roughly the same number of points. In this case, the lengths of intervals are different. This means, in dense region, there will be more number of cubes when auto_tuning is "on".
 
 
 
