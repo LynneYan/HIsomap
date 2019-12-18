@@ -103,9 +103,22 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
 - **auto_tuning**, string, optional, default: "off"
   - A string from ["off", "on"].
   - If "off", the input data will be divided into nr_cube cubes with fixed length of interval.
-  - If "on", the input data will be divided into nr_cube cubes where each cube contain roughly the same number of points. In this case, the lengths of intervals are different. This means, in dense region, there will be more number of cubes when auto_tuning is "on".
+  - If "on", the input data will be divided into nr_cube cubes where each cube contain roughly the same number of points. In this case, the lengths of intervals are different. This means, in dense region, there will be more number of cubes than other regions when auto_tuning is "on".
 
+- **n_neighbors**, int, optional, default: 8
+  - Number of neighbors to consider for each point in Isomap.
 
+- **eigen_solver**, string, optional, default: "auto"
+  - A string from ["auto", "arpack", "dense"].
+  - *auto*: Attempt to choose the most efficient solver for the given problem.
+  - *arpack*: Use Arnoldi decomposition to find the eigenvalues and eigenvectors.
+  - *dense*: Use a direct solver (i.e. LAPACK) for the eigenvalue decomposition.
+
+- **n_jobs**, int or None, optional, default: 1
+  - The number of parallel jobs to run. None means 1 unless in a joblib.parallel_backend context. -1 means using all processors. See Glossary for more details.
+
+- **cluster**, algorithm, optional, default: sklearn.cluster.DBSCAN(eps=0.6, min_samples=5)
+  - Scikit-learn API compatible clustering algorithm. Must provide `fit` and `predict`.
 
 ## Usage
 
