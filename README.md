@@ -83,8 +83,11 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
 ### Parameters
 
 **n_components**, int, optional, default: 2
+
     Number of dimensions in which to immerse the dissimilarities.
+
 **filter_function**, str, optional, default: "base_point_geodesic_distance"
+
     Filter function. A string from ["sum", "mean", "median", "max", "min", "std", "dist_mean", "l2norm", "knn_distance_n"]. If using knn_distance_n write the number of desired neighbors in place of n: knn_distance_5 for summed distances to 5 nearest neighbors.
 
 ## Usage
