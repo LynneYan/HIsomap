@@ -8,7 +8,7 @@ There is also a [demo](https://github.com/LynneYan/HomologyDR_Tearing) for both 
 - [Installation](#installation)
 - [Features](#features)
 - [Usage](#usage)
-- [How to cite](#how to cite)
+- [How to cite](##How to cite)
 - [License](#license)
 
 
