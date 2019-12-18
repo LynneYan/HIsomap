@@ -77,6 +77,6 @@ $ python3 example.py
 
 ## Usage
 
-## How to cite
+## Citation
 
 ## License
