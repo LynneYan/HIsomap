@@ -23,18 +23,50 @@ Running examples requires:
   - matplotlib
 
 
-### Installation
+### Installation 
+
+Python2
 
 ```
-git clone https://github.com/LynneYan/HIsomap.git
-cd HIsomap
-sudo python setup.py install
+$ git clone https://github.com/LynneYan/HIsomap.git
+$ cd HIsomap
+$ sudo python setup.py install
+```
+
+Python3
+
+```
+$ git clone https://github.com/LynneYan/HIsomap.git
+$ cd HIsomap
+$ sudo python3 setup.py install
+```
+
+### Checking your HIsomap Installation
+
+If you applied all the above steps successfully, you can open terminal and see "HIsomap X.XX" in pip list.
+
+Python2
+```
+$ pip list
+```
+Python3
+
+```
+$ pip3 list
 ```
 
 ### Run example
+
+Python2
 ```
-python example.py
+$ python example.py
 ```
+
+Python3
+```
+$ python3 example.py
+```
+
 
 #### Note
 
