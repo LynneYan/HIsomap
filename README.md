@@ -169,7 +169,7 @@ get_skeleton_links(self)
 ```python
 get_scalar_value(self)
 ```
-### Returns
+#### Returns
 - **lens**, Numpy Array, shape (, n_samples)
   - Scalar values of input data. Lower dimensional representation of data.
 
@@ -177,7 +177,7 @@ get_scalar_value(self)
 ```python
 get_base_point(self)
 ```
-### Returns
+#### Returns
 - **basePoint**, Numpy Array, shape (, n_features).
   - Base point in original domain.
 
