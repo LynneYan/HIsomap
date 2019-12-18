@@ -4,11 +4,17 @@ This is a Python implementation of homology-preserving dimension reduction(DR) a
 
 There is also a [demo](https://github.com/LynneYan/HomologyDR_Tearing) for both homology-preserving manifold landmarking and tearing.
 
-## How to use:
+
+- [Installation](#installation)
+- [Features](#features)
+- [Usage](#usage)
+- [How to cite](#how to cite)
+- [License](#license)
+
+
+## Installation
 
 Tested with Python 2.7&3.7, MacOS and Linux.
-
-## Install
 
 ### Dependencies
 
@@ -67,8 +73,10 @@ Python3
 $ python3 example.py
 ```
 
+## Features
 
-#### Note
+## Usage
 
-You can also use python3 instead of python to install and run this program.
+## How to cite
 
+## License
