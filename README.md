@@ -132,7 +132,7 @@ fit_transform(self, X, y=None, init=None)
 ```
 Fit the data from X, and returns the embedded coordinates.
 
-###Parameters
+### Parameters
 - **X**, array, shape (n_samples, n_features).
   - Input data. 
 - **y**, Ignored
@@ -144,6 +144,27 @@ Fit the data from X, and returns the embedded coordinates.
 - **Y**, array, shape (n_samples, n_components)
   - Projected output.
 
+```python
+get_landmark_index(self)
+```
+### Returns
+- **landmarks_indexes**, int list
+  - The indexes of landmarks in input data.
+
+```python
+get_skeleton_nodes(self)
+```
+### Returns
+- **landmarks**, ndarray, shape (n_landmarks, n_features).
+  - Nodes of mapper graph in original domain.
+
+
+```python
+get_skeleton_links(self)
+```
+### Returns
+- **skeleton**, ndarray, shape (n_link, 2).
+  - Edge of mapper graph.
 
 
 ## Usage
