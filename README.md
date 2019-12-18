@@ -121,9 +121,11 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
   - Scikit-learn API compatible clustering algorithm. Must provide `fit` and `predict`.
 
 ```python
-__init__(self, n_components=2, filter_function="base_point_geodesic_distance", BP='EP', nr_cubes=20, overlap_perc=0.2, auto_tuning="off", n_neighbors=8, eigen_solver='auto', n_jobs=1, clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5))
+__init__(self, n_components=2, filter_function="base_point_geodesic_distance", BP='EP', nr_cubes=20, 
+         overlap_perc=0.2, auto_tuning="off", n_neighbors=8, eigen_solver='auto', n_jobs=1, 
+         clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5))
 ```
-
+Initialize self. 
 ## Usage
 
 ## Citation
