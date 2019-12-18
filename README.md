@@ -207,6 +207,31 @@ proj.get_skeleton_links()
 
 ```
 
+### Python3 code
+```python
+# Import denpendencies
+import numpy as np
+import sklearn
+
+# Import the class
+from HIsomap import HIsomap
+
+# Sample data "octa"
+file_name = './data/octa.txt'
+X = np.loadtxt(file_name)
+
+# Initialize. The auto_tuning is turned off. And we used parameters from our paper.
+proj =  HIsomap.HIsomap(nr_cubes=20, overlap_perc=0.2, clusterer=sklearn.cluster.DBSCAN(eps=150, min_samples=5), filter_function="base_point_geodesic_distance", BP="BC", auto_tuning="off")
+
+# Fit to and transform the data. Y is projected result in 2 dimensional space.
+Y = proj.fit_transform(X)
+
+# You can also get the 'mapper graph' with nodes and edges.
+proj.get_skeleton_nodes()
+proj.get_skeleton_links()
+
+```
+
 
 ## Citation
 
