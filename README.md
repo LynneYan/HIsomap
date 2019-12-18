@@ -85,10 +85,24 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
 - **n_components**, int, optional, default: 2
   - Number of dimensions in which to immerse the dissimilarities.
 
-- **filter_function**, str, optional, default: "base_point_geodesic_distance"
+- **filter_function**, string, optional, default: "base_point_geodesic_distance"
   - A string from ["sum", "mean", "median", "max", "min", "std", "dist_mean", "l2norm", "knn_distance_n", "height", "width", "base_point_geodesic_distance", "dist_mean", "eccentricity", "Guass_density", "density_estimator", "integral_geodesic_distance", "graph_Laplacian", "Guass_density_auto"]. 
   - If using knn_distance_n write the number of desired neighbors in place of n: knn_distance_5 for summed distances to 5 nearest neighbors.
   - If using base_point_geodesic_distance, you can adjust the parameter "BP" to locate the base point.
+
+- **BP**, string, optional, default: "EP"
+  - A string from ["EP", "BC", "DR"].
+  - *EP* means extremal point, *BC* means barycenter, and *DR* means densest region.
+
+- **nr_cubes**, int, optional, default: 20
+  - The number of intervals/hypercubes to create.
+
+- **overlap_perc**, float, optional, default: 0.2
+  - The percentage of overlap "between" the intervals/hypercubes.
+
+- **auto_tuning**, string, optional, default: "off"
+
+
 
 ## Usage
 
