@@ -80,7 +80,7 @@ class HIsomap(n_components=2, filter_function="base_point_geodesic_distance", BP
               overlap_perc=0.2, auto_tuning="off", n_neighbors=8, eigen_solver='auto', n_jobs=1, 
               clusterer=sklearn.cluster.DBSCAN(eps=0.6, min_samples=5))
 ```
-### Parameters
+#### Parameters
 
 - **n_components**, int, optional, default: 2
   - Number of dimensions in which to immerse the dissimilarities.
@@ -132,7 +132,7 @@ fit_transform(self, X, y=None, init=None)
 ```
 Fit the data from X, and returns the embedded coordinates.
 
-### Parameters
+#### Parameters
 - **X**, array, shape (n_samples, n_features).
   - Input data. 
 - **y**, Ignored
@@ -140,21 +140,21 @@ Fit the data from X, and returns the embedded coordinates.
 - **init**, ndarray, shape (n_samples,), optional, default: None
   - Starting configuration of the embedding to initialize the SMACOF algorithm. By default, the algorithm is initialized with a randomly chosen array.
 
-### Returns
+#### Returns
 - **Y**, array, shape (n_samples, n_components)
   - Projected output.
 
 ```python
 get_landmark_index(self)
 ```
-### Returns
+#### Returns
 - **landmarks_indexes**, int list
   - The indexes of landmarks in input data.
 
 ```python
 get_skeleton_nodes(self)
 ```
-### Returns
+#### Returns
 - **landmarks**, ndarray, shape (n_landmarks, n_features).
   - Nodes of mapper graph in original domain.
 
@@ -162,7 +162,7 @@ get_skeleton_nodes(self)
 ```python
 get_skeleton_links(self)
 ```
-### Returns
+#### Returns
 - **skeleton**, ndarray, shape (n_links, 2).
   - Edges of mapper graph.
 
