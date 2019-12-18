@@ -183,6 +183,31 @@ get_base_point(self)
 
 ## Usage
 
+### Python2 code
+```python
+# Import denpendencies
+import numpy as np
+
+# Import the class
+from HIsomap import HIsomap
+
+# Sample data "Swiss hole"
+file_name = './data/SwissHole.txt'
+X = np.loadtxt(file_name)
+
+# Initialize. In this example, the number of cubes is 25 and auto_tuning is enabled. Other parameters are using the default.
+proj = HIsomap(nr_cubes=25, auto_tuning="on")
+
+# Fit to and transform the data. Y is projected result in 2 dimensional space.
+Y = proj.fit_transform(X)
+
+# You can also get the 'mapper graph' with nodes and edges.
+proj.get_skeleton_nodes()
+proj.get_skeleton_links()
+
+```
+
+
 ## Citation
 
 ## License
