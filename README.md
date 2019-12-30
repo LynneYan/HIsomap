@@ -236,3 +236,5 @@ proj.get_skeleton_links()
 ## Citation
 
 ## License
+
+Standard MIT disclaimer applies, see LICENSE.md for full text. 
