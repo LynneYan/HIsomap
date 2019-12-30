@@ -237,4 +237,4 @@ proj.get_skeleton_links()
 
 ## License
 
-Standard MIT disclaimer applies, see LICENSE.md for full text. 
+Standard MIT disclaimer applies, see LICENSE for full text. 
